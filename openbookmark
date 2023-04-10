@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Definir as variáveis
+dir="$HOME/Documents/bookmarks"
+file="$dir/bookmarks.txt"
+
+# Remover linhas comentadas e extrair URLs
+urls=$(grep -v '^#' "$file" | cut -d' ' -f1)
+
+# Exibir lista de URLs e selecionar uma usando dmenu
+selected_url=$(echo "$urls" | dmenu -i -l 50)
+
+# Abrir a URL selecionada usando librewolf
+if [ -n "$selected_url" ]; then
+    librewolf "$selected_url"
+fi
