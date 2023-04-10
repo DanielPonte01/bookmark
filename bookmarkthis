@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Variables
+bookmark=""
+dir="$HOME/Documents/bookmarks"
+file="$dir/bookmarks.txt"
+title=""
+
+# Defining 'bookmark' as what is selected
+# Uncomment the next one if you want what is on yout clipboard to be bookmarket. Not recommended.
+# bookmark="$(xclip -selection clipboard -o)"
+bookmark="$(xclip -o)"
+
+# Verify if 'bookmark' is empty
+if [ -z "$bookmark" ]; then
+    notify-send "Oops." "Nothing to add!"
+    exit 1
+fi
+
+# Create the bookmarks directory if it doesn't already exist
+if [ ! -d "$dir" ]; then
+    mkdir -p "$dir"
+fi
+
+# Check if bookmark file exists
+if [ ! -f "$file" ]; then
+    touch "$file"
+fi
+
+# Set the 'title' variable to the bookmark title chosen by the user via dmenu
+title="$(echo "" | dmenu -p "Enter title for bookmark (press ENTER to save untitled):")"
+
+# Add the bookmark at the end of the snippets file
+if [ -n "$title" ]; then
+    string="$bookmark #$title"
+else
+    string="$bookmark"
+fi
+
+echo "$string" >> "$file"
+notify-send "Added!" "The following bookmark has been added to the snippets file: $bookmark"
